@@ -5,7 +5,8 @@ let tableCount = base.tables.length;
 let totalRecords = 0;
 // console.log(tableCount);
 
-// count up through the index of tables left to right (0 index to totalRecords -1)
+/* count up through the index of tables from left to right as arranged visually on the
+   webpage (where the farthest left table is 0 index through to the farthest right tableCount -1) */
 for (let i = 0; i < tableCount; i++){
     // each table
     let name = base.tables[i].name;
@@ -20,7 +21,6 @@ for (let i = 0; i < tableCount; i++){
     totalRecords += result.records.length;
     // each table, total records
     output.text(name + ': ' + result.records.length);
-
 }
 
 output.text('Total Records in ' + base.name + ': ' + totalRecords);
