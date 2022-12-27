@@ -1,4 +1,6 @@
+# 1st artworks record to check
 start=1
+# last artworks record
 end=10
 id=$start
 # The Art Institute of Chicago has a collection of artworks, many of which are in the public domain
@@ -16,10 +18,12 @@ do
     # if [ $response -eq 200 ]
     if [ $response -eq 200 ]
     then
-        # The URL returns a 200 status code, so execute the code in this block
         echo "The URL $url returned a 200 status code!"
+
         # get the JSON data from the Chicago Institute of Art for the numbered artwork
         artic_json=$(curl -s $url)
+
+        # Only grab artworks that are "Oil on Canvas" by searching for "Oil" at the beginning of the string
         if [ "$(printf "%s" "$artic_json" | jq -r '.data.medium_display' | cut -c 1-3)" = "Oil" ]
         then
             # parse the JSON bits
