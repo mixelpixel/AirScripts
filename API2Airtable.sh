@@ -2,10 +2,13 @@
 
 # First & last record ID# range to check
 start=1
-end=20000
+end=20
 # A variable for incrementing through the above range
 id=$start
-# The Art Institute of Chicago has a collection of artworks, many of which are in the public domain
+# The Art Institute of Chicago has a collection of artworks.
+# Append a natural number to the end of the base url, e.g.
+# https://api.artic.edu/api/v1/artworks/4
+# https://api.artic.edu/api/v1/artworks/120001
 base_url=https://api.artic.edu/api/v1/artworks/
 
 while [ $id -le $end ]
@@ -28,13 +31,17 @@ do
             # Construct the target image URL using the retrieved image_id
             # per: https://api.artic.edu/docs/#iiif-image-api
             url="https://www.artic.edu/iiif/2/$image_id/full/843,/0/default.jpg"
+            # Does the url return http 200/OK?
+            image_url_response=$(curl -s -o /dev/null -w "%{http_code}" $url)
             # grab the headers to check for content-length of the image URL
             image_URL_headers=$(curl -s -I $url)
             # is it public domain?
             is_public_domain=$(printf "%s" "$artic_json" | jq -r '.data.is_public_domain')
-            if [[ ! "$image_URL_headers" =~ "content-length: 0" ]] && [[ $is_public_domain = "true" ]]
+            if [[ ! "$image_URL_headers" =~ "content-length: 0" ]] &&
+            [[ $is_public_domain = "true" ]] &&
+            [[ $image_url_response -eq 200 ]]
             then
-                echo "We made it - public domain AND image content at the image URL"
+                echo "We made it - public domain AND image URL = HTTP 200 AND image content at the image URL"
                 # parse the JSON bits
                 title=$(printf "%s" "$artic_json" | jq -r '.data.title')
                 artist_title=$(printf "%s" "$artic_json" | jq -r '.data.artist_title')
@@ -50,8 +57,8 @@ do
                 place_of_origin=$(printf "%s" "$artic_json" | jq -r '.data.place_of_origin')
 
                 # POST data to the Airtable API:
-                curl -X POST "https://api.airtable.com/v0/{baseId}/{tableIdOrName}" \
-                -H "Authorization: Bearer YOUR_API_KEY" \
+                curl -X POST "https://api.airtable.com/v0/appeGbNwXFgnqhSbi/tbltZipMPzSgi6TNl" \
+                -H "Authorization: Bearer keytNMtnk8kpGN1sJ" \
                 -H "Content-Type: application/json" \
                 --data "{
                     \"fields\":{
@@ -77,7 +84,7 @@ do
                 }"
             else
                 # The image URL has no image data
-                echo "Either the image URL content-length is 0, the image is NOT public domain, or BOTH."
+                echo "Either the image URL content-length is 0, the image is NOT public domain, image URL != HTTP 200, or ALL THREE."
 
             fi
         else
