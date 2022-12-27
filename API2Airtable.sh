@@ -1,6 +1,7 @@
-# 1st artworks record to check
+#!/bin/bash
+
+# First & last record ID# range to check
 start=1
-# last artworks record
 end=10
 id=$start
 # The Art Institute of Chicago has a collection of artworks, many of which are in the public domain
@@ -10,20 +11,15 @@ while [ $id -le $end ]
 do
     # Construct the URL with the artworks ID
     url=$base_url$id
-
     # Use curl to fetch the URL and store the output in a variable
     response=$(curl -s -o /dev/null -w "%{http_code}" $url)
-
     # Check if the HTTP status code is 200
-    # if [ $response -eq 200 ]
     if [ $response -eq 200 ]
     then
         echo "The URL $url returned a 200 status code!"
-
-        # get the JSON data from the Chicago Institute of Art for the numbered artwork
+        # Get the JSON data from the Chicago Institute of Art for the numbered artwork
         artic_json=$(curl -s $url)
-
-        # Only grab artworks that are "Oil on Canvas" by searching for "Oil" at the beginning of the string
+        # Check
         if [ "$(printf "%s" "$artic_json" | jq -r '.data.medium_display' | cut -c 1-3)" = "Oil" ]
         then
             # parse the JSON bits
@@ -72,7 +68,6 @@ do
             }"
         else
             # The .data.medium_display is not "Oil"
-            # echo "The medium_display contains $medium_display, not Oil!"
             echo "The medium_display contains $(printf "%s" "$artic_json" | jq -r '.data.medium_display'), not Oil!"
         fi
     else
