@@ -57,8 +57,8 @@ do
                 place_of_origin=$(printf "%s" "$artic_json" | jq -r '.data.place_of_origin')
 
                 # POST data to the Airtable API:
-                curl -X POST "https://api.airtable.com/v0/appeGbNwXFgnqhSbi/tbltZipMPzSgi6TNl" \
-                -H "Authorization: Bearer keytNMtnk8kpGN1sJ" \
+                curl -X POST "https://api.airtable.com/v0/{baseId}/{tableIdOrName}" \
+                -H "Authorization: Bearer YOUR_API_KEY" \
                 -H "Content-Type: application/json" \
                 --data "{
                     \"fields\":{
