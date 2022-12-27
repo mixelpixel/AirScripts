@@ -2,7 +2,7 @@
 
 # First & last record ID# range to check
 start=1
-end=20
+end=100
 # A variable for incrementing through the above range
 id=$start
 # The Art Institute of Chicago has a collection of artworks.
@@ -47,7 +47,7 @@ do
                 artist_title=$(printf "%s" "$artic_json" | jq -r '.data.artist_title')
                 # image_id=$(printf "%s" "$artic_json" | jq -r '.data.image_id')
                 copyright_notice=$(printf "%s" "$artic_json" | jq -r '.data.copyright_notice')
-                id=$(printf "%s" "$artic_json" | jq -r '.data.id')
+                artic_id=$(printf "%s" "$artic_json" | jq -r '.data.id')
                 # multi-line string with special characters
                 artist_display=$(printf "%s" "$artic_json" | jq -r '.data.artist_display' | jq -R -s -c '@text')
                 medium_display=$(printf "%s" "$artic_json" | jq -r '.data.medium_display')
@@ -71,7 +71,7 @@ do
                         \"Artist\":\"$artist_title\",
                         \"image_id\":\"$image_id\",
                         \"Copyright Notice\":\"$copyright_notice\",
-                        \"API ID\":$id,
+                        \"API ID\":$artic_id,
                         \"Image URL\":\"$url\",
                         \"artist display\":$artist_display,
                         \"medium display\":\"$medium_display\",
@@ -79,7 +79,10 @@ do
                         \"alt text\":\"$alt_text\",
                         \"classification title\":\"$classification_title\",
                         \"place of origin\":\"$place_of_origin\",
-                        \"is_public_domain\":\"$is_public_domain\"
+                        \"is_public_domain\":\"$is_public_domain\",
+                        \"batch start\":$start,
+                        \"batch end\":$end,
+                        \"iteration\":$id
                     }
                 }"
             else
