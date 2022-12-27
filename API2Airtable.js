@@ -75,8 +75,8 @@ while (id <= end) {
         // Use the data here
         // console.log(data);
         var Airtable = require('airtable');
-        var base = new Airtable({apiKey: 'keytNMtnk8kpGN1sJ'}).base('appeGbNwXFgnqhSbi');
-        base('artworks').create([data], function(err, records) {
+        var base = new Airtable({apiKey: 'YOUR_API_KEY'}).base('{baseId}');
+        base('{tableNameOrId}').create([data], function(err, records) {
             if (err) {
                 console.error(err);
                 return;
